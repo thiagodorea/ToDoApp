@@ -1,5 +1,5 @@
-let email = document.getElementById("inputEmail");
-let password = document.getElementById("inputPassword");
+let inputEmail = document.getElementById("inputEmail");
+let inputPassword = document.getElementById("inputPassword");
 let btnAcessar = document.getElementById("btnAcessar");
 let validacaoEmail = document.getElementById("validacaoEmail");
 let validacaoPassword = document.getElementById("validacaoPassword");
@@ -10,10 +10,10 @@ let dadosLogin = {
 };
 
 btnAcessar.addEventListener("click", function(evento){
-    if(validaLogin(email.value, password.value)){
+    if(validaLogin(inputEmail.value, inputPassword.value)){
         evento.preventDefault();
-        email = retiraEspacos(email.value);
-        password = retiraEspacos(password.value);
+        email = retiraEspacos(inputEmail.value);
+        password = retiraEspacos(inputPassword.value);
     
         dadosLogin.email = email;
         dadosLogin.password = password;
@@ -22,44 +22,19 @@ btnAcessar.addEventListener("click", function(evento){
     };
 });
 
-email.addEventListener("blur", ()=>{
-    if(email.value.length > 0 ){
-        if(emailValido(email.value)){
-            validacaoEmail.innerText = "" ;
-            email.style.border = formatoValido;
-        }else {
-            validacaoEmail.innerText = emailInvalido;
-            email.style.border = formatoInvalido;
-        }
-        validaLogin(email.value, password.value);
-    };
-});
-
-email.addEventListener("keyup", () =>{
-    if(email.value){
-        validacaoEmail.innerText = "" ;
-        email.style.border = formatoValido;
-    }else {
-        validacaoEmail.innerText = campoObrigatorio;
-        email.style.border = formatoInvalido;
-    }
-    validaLogin(email.value, password.value);
+inputEmail.addEventListener("keyup", () =>{
+    validaCampo(validacaoEmail,inputEmail,campoObrigatorio);
+    validaLogin(inputEmail.value, inputPassword.value);
 }); 
 
-password.addEventListener("keyup", () =>{
-    if(password.value) {
-        validacaoPassword.innerText = "" ;
-        password.style.border = formatoValido;
-    }else {
-        validacaoPassword.innerText = campoObrigatorio;
-        password.style.border = formatoInvalido;
-    }
-    validaLogin(password.value, password.value);
-}) ;
+inputPassword.addEventListener("keyup", () =>{
+    validaCampo(validacaoPassword,inputPassword,campoObrigatorio);
+    validaLogin(inputEmail.value, inputPassword.value);
+});
 
 
 function validaLogin(email, password){
-    if(emailValido(email) && password){
+    if(email && password && emailIsValid(email,validacaoEmail,inputEmail)){
         btnAcessar.removeAttribute("disabled");
         btnAcessar.style.backgroundColor="#7898FF";
         btnAcessar.style.color="#ffffff";
