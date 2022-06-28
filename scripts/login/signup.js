@@ -1,3 +1,5 @@
+let BASE_URL = "https://ctd-todo-api.herokuapp.com/v1"
+
 let imputNome = document.getElementById("imputNome");
 let imputSobreNome = document.getElementById("imputSobreNome");
 let imputEmail = document.getElementById("imputEmail");
@@ -11,28 +13,67 @@ let validacaoEmail = document.getElementById("validacaoEmail");
 let validacaoSenha = document.getElementById("validacaoSenha");
 let validacaoRepeteSenha = document.getElementById("validacaoRepeteSenha");
 
+const toastLive = document.getElementById('toastSuccess');
+const msgToast = document.getElementById('toastBody')
+const toast = new bootstrap.Toast(toastLive);
+
 let dadosUsuario = {
-    nome:"",
-    sobreNome:"",
+    firstName:"",
+    lastName:"",
     email:"",
-    senha:""
+    password:""
 };
 
 btnCriar.addEventListener("click", function(evento){
     if(formularioValido(imputNome.value,imputSobreNome.value,imputEmail.value,imputSenha.value)){
         evento.preventDefault();
         
-        nome = retiraEspacos(imputNome.value);
-        sobreNome = retiraEspacos(imputSobreNome.value);
+        firstName = retiraEspacos(imputNome.value);
+        lastName = retiraEspacos(imputSobreNome.value);
         email = retiraEspacos(imputEmail.value);
-        senha = retiraEspacos(imputSenha.value);
+        password = retiraEspacos(imputSenha.value);
     
-        dadosUsuario.nome = nome;
-        dadosUsuario.sobreNome = sobreNome;
+        dadosUsuario.nome = firstName;
+        dadosUsuario.sobreNome = lastName;
         dadosUsuario.email = email;
-        dadosUsuario.senha = senha;
+        dadosUsuario.senha = password;
         let usuarioJson = JSON.stringify(dadosUsuario);
         console.log(usuarioJson);
+
+        //Comunicação com a API
+        let configRequest = {
+            method: "POST",
+            headers:{
+                "Content-type":'Application/Json',
+                "Access-Control-Allow-Origin": "*"
+            },
+            body:usuarioJson
+        }
+        fetch(`${BASE_URL}/users`,configRequest)
+        .then( res => {
+            if(res.status == 200 || res.status == 201) {
+                return res.json();
+            }else{
+                throw res;
+            }
+        })
+        .then(
+            res => {
+                loginSucesso("Usuário criado com sucesso");
+                console.log(res);
+            }
+        )
+        .catch(
+            erro => {
+                if(erro.status == 400 || erro.status == 404){
+                    loginFalha("Usuário já existe");
+                }else{
+                    loginFalha(erro);
+                }
+            }
+        )
+    }else{
+        loginFalha("Falha ao enviar os dados.");
     };
 });
 
@@ -59,8 +100,6 @@ imputSenha.addEventListener("keyup", () =>{
 
 imputRepeteSenha.addEventListener("keyup", () =>{
     conferiSenha();
-
-    // validaCampo(validacaoSenha,imputSenha,campoObrigatorio);
     formularioValido(imputNome.value,imputSobreNome.value,imputEmail.value,imputSenha.value)
 });
 
@@ -80,12 +119,22 @@ function formularioValido(nome,sobreNome,email,senha){
 };
 
 function conferiSenha(){
-    console.log("Conferindo senha")
-    if(imputSenha.value !== imputRepeteSenha.value && imputRepeteSenha.value.length > 0){
+    if(imputSenha.value !== imputRepeteSenha.value){
         validaCampo(validacaoRepeteSenha,imputRepeteSenha,senhaDiferente);
         return false
     }else{
         validaCampo(validacaoRepeteSenha,imputRepeteSenha,campoObrigatorio);
         return true
     }
+};
+
+function loginSucesso(res) {
+    msgToast.innerHTML = `<i class="fa-regular fa-thumbs-up"> </i> ${res}`;
+    toast.show();
+};
+
+function loginFalha(res) {
+    msgToast.innerHTML = `<i class="fa-regular fa-thumbs-down"> </i> ${res}`;
+    toastLive.classList.toggle('bg-danger')
+    toast.show();
 };

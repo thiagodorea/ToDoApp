@@ -18,7 +18,6 @@ function emailIsValid(email, campo, input) {
 };
 
 function validaCampo(campo,input,mensagem){
-    console.log(input.value);
     if(input.value !== "" && mensagem === senhaDiferente){
         campo.innerText = mensagem;
         input.style.border = formatoInvalido;
