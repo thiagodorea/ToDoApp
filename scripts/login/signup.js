@@ -134,10 +134,14 @@ function loginSucesso(res) {
     imputEmail.value = '';
     imputSenha.value = '';
     imputRepeteSenha.value = '';
+    setTimeout(() => {
+        location.href = "index.html"
+    },2000);
 };
 
 function loginFalha(res) {
     msgToast.innerHTML = `<i class="fa-regular fa-thumbs-down"> </i> ${res}`;
-    toastLive.classList.toggle('bg-danger')
+    toastLive.classList.remove('bg-success')
+    toastLive.classList.add('bg-danger')
     toast.show();
 };
