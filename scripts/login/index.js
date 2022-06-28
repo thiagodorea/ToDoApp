@@ -87,6 +87,8 @@ function validaLogin(email, password){
 
 function loginSucesso(res) {
     console.log(res);
+    inputEmail.value = "";
+    inputPassword.value = "";
 };
 
 function loginFalha(res) {
