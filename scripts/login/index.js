@@ -1,8 +1,14 @@
+let BASE_URL = "https://ctd-todo-api.herokuapp.com/v1"
+
 let inputEmail = document.getElementById("inputEmail");
 let inputPassword = document.getElementById("inputPassword");
 let btnAcessar = document.getElementById("btnAcessar");
 let validacaoEmail = document.getElementById("validacaoEmail");
 let validacaoPassword = document.getElementById("validacaoPassword");
+
+const toastLive = document.getElementById('toastErro');
+const msgToast = document.getElementById('toastBody')
+const toastErro = new bootstrap.Toast(toastLive);
 
 let dadosLogin = {
     email:"",
@@ -18,7 +24,41 @@ btnAcessar.addEventListener("click", function(evento){
         dadosLogin.email = email;
         dadosLogin.password = password;
         let usuarioJson = JSON.stringify(dadosLogin);
-        console.log(usuarioJson);
+
+        //Comunicação com a API
+        let configRequest = {
+            method: "POST",
+            headers:{
+                "Content-type":'Application/Json'
+            },
+            body:usuarioJson
+        }
+        fetch(`${BASE_URL}/users/login`,configRequest)
+        .then( res => {
+            if(res.status == 200 || res.status == 201) {
+                return res.json();
+            }else{
+                throw res;
+            }
+        })
+        .then(
+            res => {
+                loginSucesso(res);
+            }
+        )
+        .catch(
+            erro => {
+                if(erro.status == 400 ) {
+                    loginFalha("Senha inválida");
+                }else if(erro.status == 404){
+                    loginFalha("E-mail inválido");
+                }else{
+                    loginFalha(erro);
+                }
+            }
+        )
+    }else{
+        loginFalha("Login Inválido");
     };
 });
 
@@ -45,5 +85,14 @@ function validaLogin(email, password){
         btnAcessar.style.color="#808080";
         return false;
     }
+};
+
+function loginSucesso(res) {
+    console.log(res);
+};
+
+function loginFalha(res) {
+    msgToast.innerHTML = `<i class="fa-regular fa-face-angry"> </i> ${res}`;
+    toastErro.show();
 };
 
