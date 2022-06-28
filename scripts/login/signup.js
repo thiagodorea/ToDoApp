@@ -129,6 +129,11 @@ function conferiSenha(){
 function loginSucesso(res) {
     msgToast.innerHTML = `<i class="fa-regular fa-thumbs-up"> </i> ${res}`;
     toast.show();
+    imputNome.value = '';
+    imputSobreNome.value = '';
+    imputEmail.value = '';
+    imputSenha.value = '';
+    imputRepeteSenha.value = '';
 };
 
 function loginFalha(res) {
