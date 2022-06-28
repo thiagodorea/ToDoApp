@@ -1,5 +1,3 @@
-let BASE_URL = "https://ctd-todo-api.herokuapp.com/v1"
-
 let inputEmail = document.getElementById("inputEmail");
 let inputPassword = document.getElementById("inputPassword");
 let btnAcessar = document.getElementById("btnAcessar");

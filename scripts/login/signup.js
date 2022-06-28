@@ -1,5 +1,3 @@
-let BASE_URL = "https://ctd-todo-api.herokuapp.com/v1"
-
 let imputNome = document.getElementById("imputNome");
 let imputSobreNome = document.getElementById("imputSobreNome");
 let imputEmail = document.getElementById("imputEmail");
@@ -13,7 +11,7 @@ let validacaoEmail = document.getElementById("validacaoEmail");
 let validacaoSenha = document.getElementById("validacaoSenha");
 let validacaoRepeteSenha = document.getElementById("validacaoRepeteSenha");
 
-const toastLive = document.getElementById('toastSuccess');
+const toastLive = document.getElementById('toast');
 const msgToast = document.getElementById('toastBody')
 const toast = new bootstrap.Toast(toastLive);
 
