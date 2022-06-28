@@ -10,10 +10,11 @@
 <h2 align="center">Projeto integrador de FrontEnd2 DH - Aplicação Atividade a Fazer </h2>
 
 <p align="center">
+ <a href="#">Adriana Guedes</a> • 
+ <a href="#">Juliana Carvalho</a> • 
+ <a href="#">Michaelle Lima</a> • 
+ <a href="#">Thiago Dias</a> • 
  <a href="#">Thiago Dorea Alves</a> • 
- <!-- <a href="#">Renato Lino Barros</a> • 
- <a href="#">Bruno Gomes</a> • 
- <a href="#">Tiago Saraiva</a> •  -->
 </p>
 
 <h3 align="center">Site Hospedado em: <a href="https://todoapplite.netlify.app"> https://todoapplite.netlify.app</a>  </h3>
