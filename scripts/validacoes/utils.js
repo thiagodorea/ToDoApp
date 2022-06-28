@@ -1,4 +1,4 @@
-
+let BASE_URL = "https://ctd-todo-api.herokuapp.com/v1"
 
 function retiraEspacos(texto){
     return texto.trim()
@@ -29,4 +29,3 @@ function validaCampo(campo,input,mensagem){
         input.style.border = formatoInvalido;
     }
 }
-
