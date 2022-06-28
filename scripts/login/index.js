@@ -86,7 +86,8 @@ function validaLogin(email, password){
 };
 
 function loginSucesso(res) {
-    console.log(res);
+    sessionStorage.setItem("jwt",res.jwt);
+    location.href = "tarefas.html";
     inputEmail.value = "";
     inputPassword.value = "";
 };

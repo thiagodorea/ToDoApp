@@ -11,7 +11,7 @@
 
 <p align="center">
  <a href="#">Adriana Guedes</a> • 
- <a href="#">Juliana Carvalho</a> • 
+ <a href="#">Julia Carvalho</a> • 
  <a href="#">Michaelle Lima</a> • 
  <a href="#">Thiago Dias</a> • 
  <a href="#">Thiago Dorea Alves</a> • 
