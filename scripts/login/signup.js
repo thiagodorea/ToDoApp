@@ -36,7 +36,6 @@ btnCriar.addEventListener("click", function(evento){
         dadosUsuario.email = email;
         dadosUsuario.senha = password;
         let usuarioJson = JSON.stringify(dadosUsuario);
-        console.log(usuarioJson);
 
         //Comunicação com a API
         let configRequest = {
