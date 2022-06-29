@@ -25,14 +25,20 @@ a {
 
 .user-info p {
   text-transform: capitalize;
+  margin-bottom: 0;
 }
 
 .user-info .user-image {
   height: 2em;
   width: 2em;
   border-radius: 50%;
+  /* background-image: url("../assets/face.png"); */
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  background-size: 20px;
   background-color: white;
-  opacity: .4;
+  /* opacity: .4; */
   margin-left: .7em;
 }
 
