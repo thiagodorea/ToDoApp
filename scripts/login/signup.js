@@ -25,18 +25,14 @@ let dadosUsuario = {
 btnCriar.addEventListener("click", function(evento){
     if(formularioValido(imputNome.value,imputSobreNome.value,imputEmail.value,imputSenha.value)){
         evento.preventDefault();
-        
-        firstName = retiraEspacos(imputNome.value);
-        lastName = retiraEspacos(imputSobreNome.value);
-        email = retiraEspacos(imputEmail.value);
-        password = retiraEspacos(imputSenha.value);
-    
-        dadosUsuario.nome = firstName;
-        dadosUsuario.sobreNome = lastName;
-        dadosUsuario.email = email;
-        dadosUsuario.senha = password;
+
+        dadosUsuario.firstName = retiraEspacos(imputNome.value);
+        dadosUsuario.lastName = retiraEspacos(imputSobreNome.value);
+        dadosUsuario.email = retiraEspacos(imputEmail.value);
+        dadosUsuario.password = retiraEspacos(imputSenha.value);
         let usuarioJson = JSON.stringify(dadosUsuario);
 
+        console.log(usuarioJson)
         //Comunicação com a API
         let configRequest = {
             method: "POST",
@@ -133,6 +129,8 @@ function loginSucesso(res) {
     imputEmail.value = '';
     imputSenha.value = '';
     imputRepeteSenha.value = '';
+    toastLive.classList.remove('bg-danger')
+    toastLive.classList.add('bg-success')
     setTimeout(() => {
         location.href = "index.html"
     },2000);
