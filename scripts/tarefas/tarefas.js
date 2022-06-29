@@ -51,9 +51,7 @@ async function buscarTask(id){
         resposta.then(lista => {
             if(lista.length == 0){
                 tarefasPendentes.innerHTML += `<div class="alert alert-primary" role="alert"> Você não tem nenhuma tarefa pendente. </div>`
-                console.log("sem tarefas")
             }else{
-                console.log(lista);
                 for (item  of lista) {
                     tarefasPendentes.innerHTML +=
                     `
