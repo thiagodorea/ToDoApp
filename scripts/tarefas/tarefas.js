@@ -3,8 +3,8 @@ let nomeUsuario = document.getElementById("nomeUsuario");
 let userImage = document.getElementById("userImage");
 let tarefasPendentes = document.getElementById("tarefasPendentes");
 
-const exampleEl = document.getElementById('example')
-const tooltip = new bootstrap.Tooltip(exampleEl, options)
+const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 
 let tokenJwt;
 
