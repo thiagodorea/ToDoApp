@@ -1,12 +1,18 @@
+const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+
 let sair = document.getElementById("closeApp");
 let nomeUsuario = document.getElementById("nomeUsuario");
 let userImage = document.getElementById("userImage");
 let tarefasPendentes = document.getElementById("tarefasPendentes");
-
-const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+let novaTarefa =document.getElementById("novaTarefa");
+let btnNewTask = document.getElementById("btnNewTask");
 
 let tokenJwt;
+let tarefa = {
+    description: "",
+    completed: false
+}
 
 onload = function(){
     tokenJwt = this.sessionStorage.getItem("jwt");
@@ -15,8 +21,22 @@ onload = function(){
 
 sair.addEventListener("click",() =>{
     sessionStorage.removeItem("jwt");
-    location.href = "index.html"
+    location.href = "index.html";
 });
+
+novaTarefa.addEventListener("keyup", () =>{
+    validaTask(retiraEspacos(novaTarefa.value));
+})
+
+btnNewTask.addEventListener("click",(evento) =>{
+    evento.preventDefault();
+    if(validaTask(retiraEspacos(novaTarefa.value))){
+        tarefa.description = retiraEspacos(novaTarefa.value)
+        let tarefaJson = JSON.stringify(tarefa);
+        console.log(tarefaJson);
+        enviarTarefa(tarefaJson);
+    }
+})
 
 
 async function buscarInfoUsuario(){
@@ -34,7 +54,7 @@ async function buscarInfoUsuario(){
             buscarTask();
         }
     } catch(error){
-        showError(error);
+        toastAlert("Erro ao recuperar dados","danger");
     }
 }
 
@@ -49,39 +69,70 @@ async function buscarTask(){
         let resp = await fetch(`${BASE_URL}/tasks/`,configRequest)
         let resposta = await resp.json();
         if(resposta.length == 0){
-            tarefasPendentes.innerHTML += `<div class="alert alert-primary" role="alert"> Você não tem nenhuma tarefa pendente. </div>`;
+            tarefasPendentes.innerHTML = `<div class="alert alert-primary" role="alert"> Você não tem nenhuma tarefa pendente. </div>`;
         }else{
+            tarefasPendentes.innerHTML = '';
             for (item  of resposta) {
                 setTask(item);
             }
         }
     } catch(error){
-        showError(error);
+        toastAlert(error,"danger");
     };
 };
+
+async function enviarTarefa(tarefaObj){
+    console.log(tarefaObj)
+    let configRequest = {
+        method: "POST",
+        headers: {
+            "Content-type":'Application/Json',
+            "Access-Control-Allow-Origin": "*",
+            "Authorization": `${tokenJwt}`
+        },
+        body:tarefaObj
+    } 
+    try {
+        let resp = await fetch(`${BASE_URL}/tasks/`,configRequest)
+        let resposta = await resp.json();
+        if (resp.status == 201 || resp.status == 200) {
+            novaTarefa.value = '';
+            validaTask(novaTarefa.value);
+            buscarTask();
+        } 
+    } catch (error) {
+        toastAlert(error,"danger");
+    }
+}
 
 function setName(dados){
     nomeUsuario.innerText = `Olá, ${dados.firstName} ${dados.lastName}`;
     userImage.style.backgroundImage ='url("../assets/face.png")';
 };
 
-function showError(msg){
-    tarefasPendentes.innerHTML += `<div class="alert alert-danger" role="alert"> Erro: ${msg} </div>`
-};
-
 function setTask(itenTask){
     tarefasPendentes.innerHTML +=
     `
     <li class="tarefa">
-    <div class="not-done"></div>
-    <div class="descricao">
-    <p class="nome">${itenTask.description}</p>
-    <p class="timestamp">Criada em: ${dataFormatada(itenTask.createdAt)}</p>
-    </div>
+        <div class="not-done"></div>
+        <div class="descricao">
+            <p class="nome">${itenTask.description}</p>
+            <p class="timestamp">Criada em: ${dataFormatada(itenTask.createdAt)}</p>
+        </div>
     </li>
     `
 };
 
-function newTask(task){
-    console.log(task);
+function validaTask(task){
+    if(task.length > 4 ){
+        btnNewTask.removeAttribute("disabled");
+        btnNewTask.style.cursor = "pointer";
+        btnNewTask.style.color = "var(--secondary)";
+        return true;
+    }else{
+        btnNewTask.setAttribute("disabled","disabled");
+        btnNewTask.style.cursor = "no-drop";
+        btnNewTask.style.color = "#B7B7B7";
+        return false;
+    }
 }

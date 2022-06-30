@@ -4,10 +4,6 @@ let btnAcessar = document.getElementById("btnAcessar");
 let validacaoEmail = document.getElementById("validacaoEmail");
 let validacaoPassword = document.getElementById("validacaoPassword");
 
-const toastLive = document.getElementById('toastErro');
-const msgToast = document.getElementById('toastBody')
-const toastErro = new bootstrap.Toast(toastLive);
-
 let dadosLogin = {
     email:"",
     password:""
@@ -16,11 +12,9 @@ let dadosLogin = {
 btnAcessar.addEventListener("click", function(evento){
     if(validaLogin(inputEmail.value, inputPassword.value)){
         evento.preventDefault();
-        email = retiraEspacos(inputEmail.value);
-        password = retiraEspacos(inputPassword.value);
-    
-        dadosLogin.email = email;
-        dadosLogin.password = password;
+
+        dadosLogin.email = retiraEspacos(inputEmail.value);
+        dadosLogin.password = retiraEspacos(inputPassword.value);
         let usuarioJson = JSON.stringify(dadosLogin);
 
         //Comunicação com a API
@@ -47,16 +41,16 @@ btnAcessar.addEventListener("click", function(evento){
         .catch(
             erro => {
                 if(erro.status == 400 ) {
-                    loginFalha("Senha inválida");
+                    toastAlert("Senha inválida","danger");
                 }else if(erro.status == 404){
-                    loginFalha("E-mail inválido");
+                    toastAlert("E-mail inválido","danger");
                 }else{
-                    loginFalha(erro);
+                    toastAlert(erro,"danger");
                 }
             }
         )
     }else{
-        loginFalha("Login Inválido");
+        toastAlert("Login Inválido","danger");
     };
 });
 
@@ -91,9 +85,3 @@ function loginSucesso(res) {
     inputEmail.value = "";
     inputPassword.value = "";
 };
-
-function loginFalha(res) {
-    msgToast.innerHTML = `<i class="fa-regular fa-face-angry"> </i> ${res}`;
-    toastErro.show();
-};
-

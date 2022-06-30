@@ -92,7 +92,7 @@ a {
   margin-left: 2em;
   margin-right: 1em;
   opacity: .5;
-  cursor: pointer;
+  cursor: no-drop;
 }
 
 .nova-tarefa button:hover {
