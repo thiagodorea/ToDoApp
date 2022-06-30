@@ -98,7 +98,7 @@ async function enviarTarefa(tarefaObj){
         if (resp.status == 201 || resp.status == 200) {
             novaTarefa.value = '';
             validaTask(novaTarefa.value);
-            buscarTask();
+            GbuscarTask();
         } 
     } catch (error) {
         toastAlert(error,"danger");
