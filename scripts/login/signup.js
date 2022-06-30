@@ -32,7 +32,6 @@ btnCriar.addEventListener("click", function(evento){
         dadosUsuario.password = retiraEspacos(imputSenha.value);
         let usuarioJson = JSON.stringify(dadosUsuario);
 
-        console.log(usuarioJson)
         //Comunicação com a API
         let configRequest = {
             method: "POST",
@@ -52,21 +51,21 @@ btnCriar.addEventListener("click", function(evento){
         })
         .then(
             res => {
-                loginSucesso("Usuário criado com sucesso");
-                console.log(res);
+                toastAlert("Usuário criado com sucesso","success");
+                loginSucesso();
             }
         )
         .catch(
             erro => {
                 if(erro.status == 400 || erro.status == 404){
-                    loginFalha("Usuário já existe");
+                    toastAlert("Usuário já existe","danger");
                 }else{
-                    loginFalha(erro);
+                    toastAlert(erro,"danger");
                 }
             }
         )
     }else{
-        loginFalha("Falha ao enviar os dados.");
+        toastAlert("Falha ao enviar os dados.","danger");
     };
 });
 
@@ -121,24 +120,13 @@ function conferiSenha(){
     }
 };
 
-function loginSucesso(res) {
-    msgToast.innerHTML = `<i class="fa-regular fa-thumbs-up"> </i> ${res}`;
-    toast.show();
+function loginSucesso() {
     imputNome.value = '';
     imputSobreNome.value = '';
     imputEmail.value = '';
     imputSenha.value = '';
     imputRepeteSenha.value = '';
-    toastLive.classList.remove('bg-danger')
-    toastLive.classList.add('bg-success')
     setTimeout(() => {
         location.href = "index.html"
     },2000);
-};
-
-function loginFalha(res) {
-    msgToast.innerHTML = `<i class="fa-regular fa-thumbs-down"> </i> ${res}`;
-    toastLive.classList.remove('bg-success')
-    toastLive.classList.add('bg-danger')
-    toast.show();
 };
