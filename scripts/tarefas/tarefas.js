@@ -82,7 +82,7 @@ async function buscarTask(){
 };
 
 async function enviarTarefa(tarefaObj){
-    console.log(tarefaObj)
+    btnSpinner();
     let configRequest = {
         method: "POST",
         headers: {
@@ -95,12 +95,14 @@ async function enviarTarefa(tarefaObj){
     try {
         let resp = await fetch(`${BASE_URL}/tasks/`,configRequest)
         let resposta = await resp.json();
+        btnSpinner(resp.status);
         if (resp.status == 201 || resp.status == 200) {
             novaTarefa.value = '';
             validaTask(novaTarefa.value);
             GbuscarTask();
         } 
     } catch (error) {
+        btnSpinner(404);
         toastAlert(error,"danger");
     }
 }
@@ -135,4 +137,16 @@ function validaTask(task){
         btnNewTask.style.color = "#B7B7B7";
         return false;
     }
-}
+};
+
+function btnSpinner(status){
+    if(status == undefined){
+        btnNewTask.innerHTML=`
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        `
+    }else{
+        btnNewTask.innerHTML=`
+        <i class="fa-solid fa-paper-plane fs-3"></i>
+        `
+    };
+};

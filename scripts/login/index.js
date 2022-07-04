@@ -12,7 +12,7 @@ let dadosLogin = {
 btnAcessar.addEventListener("click", function(evento){
     if(validaLogin(inputEmail.value, inputPassword.value)){
         evento.preventDefault();
-
+        btnSpinner();
         dadosLogin.email = retiraEspacos(inputEmail.value);
         dadosLogin.password = retiraEspacos(inputPassword.value);
         let usuarioJson = JSON.stringify(dadosLogin);
@@ -27,6 +27,7 @@ btnAcessar.addEventListener("click", function(evento){
         }
         fetch(`${BASE_URL}/users/login`,configRequest)
         .then( res => {
+            btnSpinner(res.status);
             if(res.status == 200 || res.status == 201) {
                 return res.json();
             }else{
@@ -39,13 +40,14 @@ btnAcessar.addEventListener("click", function(evento){
             }
         )
         .catch(
-            erro => {
-                if(erro.status == 400 ) {
+            error => {
+                btnSpinner(error.status);
+                if(error.status == 400 ) {
                     toastAlert("Senha inválida","danger");
-                }else if(erro.status == 404){
+                }else if(error.status == 404){
                     toastAlert("E-mail inválido","danger");
                 }else{
-                    toastAlert(erro,"danger");
+                    toastAlert(error,"danger");
                 }
             }
         )
@@ -84,4 +86,16 @@ function loginSucesso(res) {
     location.href = "tarefas.html";
     inputEmail.value = "";
     inputPassword.value = "";
+};
+
+function btnSpinner(status){
+    if(status == undefined){
+        btnAcessar.innerHTML=`
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        `
+    }else{
+        btnAcessar.innerHTML=`
+        Acessar <i class="fa-solid fa-right-to-bracket"></i>
+        `
+    };
 };
