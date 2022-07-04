@@ -5,6 +5,7 @@ let sair = document.getElementById("closeApp");
 let nomeUsuario = document.getElementById("nomeUsuario");
 let userImage = document.getElementById("userImage");
 let tarefasPendentes = document.getElementById("tarefasPendentes");
+let tarefasTerminadas = document.getElementById("tarefasTerminadas");
 let novaTarefa =document.getElementById("novaTarefa");
 let btnNewTask = document.getElementById("btnNewTask");
 
@@ -68,14 +69,21 @@ async function buscarTask(){
     try{
         let resp = await fetch(`${BASE_URL}/tasks/`,configRequest)
         let resposta = await resp.json();
-        if(resposta.length == 0){
-            tarefasPendentes.innerHTML = `<div class="alert alert-primary" role="alert"> Você não tem nenhuma tarefa pendente. </div>`;
-        }else{
-            tarefasPendentes.innerHTML = '';
-            for (item  of resposta) {
-                setTask(item);
-            }
-        }
+        resposta.map( task =>{
+                console.log(task)
+                // tarefasPendentes.innerHTML = '';
+                setTask(task);
+            });
+                
+            // if(resposta.length == 0){
+            //     tarefasPendentes.innerHTML = `<div class="alert alert-primary" role="alert"> Você não tem nenhuma tarefa pendente. </div>`;
+            // }else{
+            //     tarefasPendentes.innerHTML = '';
+            //     for (item  of resposta) {
+            //         setTask(item);
+            //     }
+            // }
+        
     } catch(error){
         toastAlert(error,"danger");
     };
@@ -99,7 +107,7 @@ async function enviarTarefa(tarefaObj){
         if (resp.status == 201 || resp.status == 200) {
             novaTarefa.value = '';
             validaTask(novaTarefa.value);
-            GbuscarTask();
+            buscarTask();
         } 
     } catch (error) {
         btnSpinner(404);
@@ -113,16 +121,29 @@ function setName(dados){
 };
 
 function setTask(itenTask){
-    tarefasPendentes.innerHTML +=
-    `
-    <li class="tarefa">
-        <div class="not-done"></div>
-        <div class="descricao">
-            <p class="nome">${itenTask.description}</p>
-            <p class="timestamp">Criada em: ${dataFormatada(itenTask.createdAt)}</p>
-        </div>
-    </li>
-    `
+    if(itenTask.completed == false){
+        tarefasPendentes.innerHTML +=
+        `
+        <li class="tarefa">
+            <div class="not-done"></div>
+            <div class="descricao">
+                <p class="nome">${itenTask.description}</p>
+                <p class="timestamp">Criada em: ${dataFormatada(itenTask.createdAt)}</p>
+            </div>
+        </li>
+        `
+    }else{
+        tarefasTerminadas.innerHTML +=
+        `
+        <li class="tarefa">
+            <div class="not-done"></div>
+            <div class="descricao">
+                <p class="nome">${itenTask.description}</p>
+                <p class="timestamp">Criada em: ${dataFormatada(itenTask.createdAt)}</p>
+            </div>
+        </li>
+        `
+    }
 };
 
 function validaTask(task){
