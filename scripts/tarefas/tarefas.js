@@ -71,17 +71,21 @@ async function buscarTask(){
         }
     }
     try{
+        let qtdCompleted = 0;
+        let qtdNotCompleted = 0;
         let resp = await fetch(`${BASE_URL}/tasks/`,configRequest)
         let resposta = await resp.json();
         // resposta.sort((x,y) => {return  y.id - x.id})
         resposta.map( task =>{
             setTask(task);
+            task.completed == true ? qtdCompleted++ : qtdNotCompleted++
         });
-                
-            // if(resposta.length == 0){
-            //     tarefasPendentes.innerHTML = `<div class="alert alert-primary" role="alert"> Você não tem nenhuma tarefa pendente. </div>`;
-            // }
-        
+        if(qtdNotCompleted == 0){
+                tarefasPendentes.innerHTML = `<div class="alert alert-primary" role="alert"> Você não tem nenhuma tarefa pendente. </div>`;
+        };
+        if(qtdCompleted == 0){
+            tarefasTerminadas.innerHTML = `<div class="alert alert-primary" role="alert"> Você não tem tarefa concluida. </div>`;
+        };
     } catch(error){
         toastAlert(error,"danger");
     };
@@ -116,7 +120,7 @@ async function enviarTarefa(tarefaObj){
     }
 };
 
-async function delTask(id){
+async function delTaskConfirm(id){
     let configRequest ={
         method: "DELETE",
         headers:{
@@ -222,7 +226,7 @@ function setTask(itenTask){
             </div>
         </li>
         `
-    };
+        };
 };
 
 function validaTask(task){
@@ -249,4 +253,39 @@ function btnSpinner(status){
         <i class="fa-solid fa-paper-plane fs-3"></i>
         `
     };
+};
+
+function delTask(id){
+
+    let body = document.body;
+    let existeModal = document.querySelector('#modalConfirmar');    
+    if (existeModal != null) body.removeChild(existeModal);
+        
+    let modal = document.createElement('div');
+        modal.className = "modal fade"
+        modal.setAttribute('id','modalConfirmar')
+        modal.setAttribute('data-bs-backdrop','static')
+        modal.setAttribute('data-bs-keyboard','modalConfirmar')
+        modal.setAttribute('data-bs-config','false')
+    body.appendChild (modal);
+    document.getElementById('modalConfirmar').innerHTML = 
+        `
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Deseja realmente apagar a atividade?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                
+                <div class="modal-footer d-flex justify-content-center">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Não</button>
+                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" onclick="delTaskConfirm(${id})">Sim</button>
+                </div>
+            </div>
+        </div>
+        `
+    const modalConfirmar = new bootstrap.Modal(document.getElementById('modalConfirmar'),{
+        keyboard: true
+    });
+    modalConfirmar.show();
 };
