@@ -107,12 +107,25 @@ a {
 .not-done {
   width: 2em;
   height: 2em;
-  background-color: var(--app-grey);
+  background-color: var(white);
+  border: 2px solid var(--secondary);
+  box-shadow: 2px 2px 5px lightgrey;
   margin-right: 1em;
   border-radius: 50%;
   cursor: pointer;
   text-align: center;
   color: grey;
+}
+
+.done{
+  position: relative;
+  width: 2em;
+  height: 2em;
+  background-color: var(--secondary);
+  box-shadow: 2px 2px 5px lightgrey;
+  border: 2px solid var(--secondary);
+  z-index: 2;
+  transition: background-color 200ms linear;
 }
 
 /* Lista de tarefas ----------------------------------------------------------- */
@@ -146,6 +159,14 @@ a {
   background-color: var(--secondary);
 }
 
+.tarefa .done {
+  background-color: var(--secondary);
+}
+
+.tarefa .done:hover  {
+  background-color: white;
+}
+
 .tarefa:first-child .not-done::before {
   content: '';
   position: absolute;
@@ -176,6 +197,15 @@ a {
   background-color: white;
   padding: 1em 2em;
   box-shadow: 2px 2px 5px lightgrey;
+}
+.tarefa .descricao p{
+  margin: 0;
+}
+/* .tarefa .descricao .fa-pencil{
+  color:var(--secondary);
+} */
+.tarefa .descricao i:hover {
+  color: var(--secondary);
 }
 
 .tarefa .nome {
@@ -218,6 +248,10 @@ a {
 }
 .tarefas-terminadas button{
   margin-left: 10px;
+}
+
+.tarefa .descricao .fa-trash:hover {
+  color: red;
 }
 
 .tarefas-terminadas .tarefa .descricao {
