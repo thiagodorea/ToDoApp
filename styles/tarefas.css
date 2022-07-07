@@ -281,3 +281,18 @@ a {
   0%{ opacity: 0.5;}
   100%{ opacity: 0.8;}
 }
+
+/* Editar Tarefas ----------------------------------------------------------- */
+.editar-tarefa{
+  border: none;
+  flex: 1;
+  border-bottom: 1px solid lightgrey;
+  border-radius: 0;
+  padding: .3em;
+  font-size: 1.1em;
+}
+
+.editar-tarefa:focus {
+  outline: none;
+  border-bottom: 1px solid grey;
+}

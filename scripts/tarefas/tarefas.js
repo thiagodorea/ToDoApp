@@ -11,6 +11,8 @@ let btnNewTask = document.getElementById("btnNewTask");
 let btnConcluido = document.getElementById("btnConcluido");
 
 let tokenJwt;
+let textoEditadodaTask ='';
+let descricaoOriginal;
 let tarefa = {
     description: "",
     completed: false
@@ -142,7 +144,7 @@ async function delTaskConfirm(id){
         if(resp.status == 200){ 
             tarefasPendentes.innerHTML = '';
             tarefasTerminadas.innerHTML = '';
-            toastAlert("Atividade excluída.","success");
+            toastAlert("Tarefa excluída.","success");
             buscarTask();
         }else if(resp.status == 400){
             toastAlert("Id inválido.","danger");
@@ -156,7 +158,7 @@ async function delTaskConfirm(id){
     }
 };
 
-async function taskDone(id){
+async function atualizaTask(id,btn,descricao){
     let configRequest= {
         headers: {
             "Content-type":'Application/Json',
@@ -169,8 +171,14 @@ async function taskDone(id){
         if(resp.status == 200){
             tarefasPendentes.innerHTML = '';
             tarefasTerminadas.innerHTML = '';
-            resposta.completed == false ? tarefa.completed = true : tarefa.completed = false
-            tarefa.description = resposta.description;
+            if(btn == 'done'){
+                resposta.completed == false ? tarefa.completed = true : tarefa.completed = false;
+                tarefa.description = resposta.description
+            }else{
+                !textoEditadodaTask == '' ? tarefa.description = textoEditadodaTask : tarefa.description = resposta.description;
+                
+            }
+
             let tarefaJson = JSON.stringify(tarefa);
             let configRequest ={
                 method: "PUT",
@@ -184,7 +192,8 @@ async function taskDone(id){
                 let resp = await fetch(`${BASE_URL}/tasks/${id}`,configRequest);
                 let resposta = await resp.json();
                 if(resp.status == 200){ 
-                    resposta.completed == true ? toastAlert("Atividade concluida.","success") :toastAlert("Atividade aberta novamente.","success")
+                    textoEditadodaTask = ''
+                    resposta.completed == true ? toastAlert("Tarefa concluida.","success") :toastAlert("Tarefa aberta novamente.","success")
                     buscarTask();
                 }else if(resp.status == 400){
                     toastAlert("Id inválido.","danger");
@@ -211,12 +220,12 @@ function setTask(itenTask){
     if(itenTask.completed == false){
         tarefasPendentes.innerHTML +=
         `
-        <li class="tarefa" id="tarefa ${itenTask.id}">
-            <div class="not-done" onclick="taskDone(${itenTask.id})" data-bs-toggle="tooltip" data-bs-placement="top" title="Concluir Tarefa"></div>
-            <div class="descricao">
-                <p class="nome">${itenTask.description}</p>
-                <p class="timestamp">Criada em: ${dataFormatada(itenTask.createdAt)}
-                    <button class=" btn"><i class="fa-solid fa-pencil"></i><button>
+        <li class="tarefa" id="tarefa${itenTask.id}">
+            <div class="not-done" onclick="atualizaTask(${itenTask.id},'done') data-bs-toggle="tooltip" data-bs-placement="top" title="Concluir Tarefa""></div>
+            <div class="descricao" id="divDescricao${itenTask.id}">
+                <p class="nome" id="descricao${itenTask.id}">${itenTask.description}</p>
+                <p id="dtCriacao${itenTask.id}" class="timestamp">Criada em: ${dataFormatada(itenTask.createdAt)}
+                    <button id="btnEdit${itenTask.id}" class=" btn" onclick="editTask(${itenTask.id})" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar Tarefa"><i class="fa-solid fa-pencil"></i></button>
                 </p>
             </div>
         </li>
@@ -224,12 +233,12 @@ function setTask(itenTask){
     }else{
         tarefasTerminadas.innerHTML +=
         `
-        <li class="tarefa" id="tarefa ${itenTask.id}">
-            <div class="not-done done" onclick="taskDone(${itenTask.id})" data-bs-toggle="tooltip" data-bs-placement="top" title="Reabrir Tarefa"></div>
+        <li class="tarefa" id="tarefa${itenTask.id}">
+            <div class="not-done done" onclick="atualizaTask(${itenTask.id},'done')" data-bs-toggle="tooltip" data-bs-placement="top" title="Reabrir Tarefa"></div>
             <div class="descricao">
                 <p class="nome">${itenTask.description}</p>
                 <p class="timestamp">Criada em: ${dataFormatada(itenTask.createdAt)}
-                    <button class="btn" onclick="delTask(${itenTask.id})"><i class="fa-solid fa-trash"></i><button>
+                    <button class="btn" onclick="delTask(${itenTask.id})"><i class="fa-solid fa-trash"></i></button>
                 </p>
             </div>
         </li>
@@ -264,7 +273,6 @@ function btnSpinner(status){
 };
 
 function delTask(id){
-
     let body = document.body;
     let existeModal = document.querySelector('#modalConfirmar');    
     if (existeModal != null) body.removeChild(existeModal);
@@ -280,9 +288,8 @@ function delTask(id){
         `
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">Deseja realmente apagar a atividade?</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-body">
+                    <h5 class="modal-title text-center" id="staticBackdropLabel">Deseja realmente apagar a tarefa?</h5>
                 </div>
                 
                 <div class="modal-footer d-flex justify-content-center">
@@ -297,3 +304,46 @@ function delTask(id){
     });
     modalConfirmar.show();
 };
+
+function editTask(idTask){
+    let divDescricao = document.getElementById(`divDescricao${idTask}`);
+    let dtCriacao = document.getElementById(`dtCriacao${idTask}`);
+    let descricao = document.getElementById(`descricao${idTask}`);
+    descricaoOriginal = [descricao,dtCriacao];
+    
+    let input = document.createElement('input');
+        input.setAttribute('id',`input${idTask}`);
+        input.setAttribute('class',`editar-tarefa`);
+        input.setAttribute('value',`${descricao.textContent}`);
+        divDescricao.appendChild(input);
+    divDescricao.removeChild(descricao);
+    divDescricao.removeChild(dtCriacao);
+    
+    let btnEdicao = document.createElement('span');
+        btnEdicao.setAttribute('id',`btnEditConfirm${idTask}`);
+        divDescricao.appendChild(btnEdicao);
+        document.getElementById(`btnEditConfirm${idTask}`).innerHTML=`
+        <button id="btnEditConfirm${idTask}" class="btn" onclick="atualizaTask(${idTask},'edit','${input.value}')" data-bs-toggle="tooltip" data-bs-placement="top" title="Confirmar"><i class="fa-solid fa-check"></i></button>
+        <button id="btnEditCancel${idTask}" class="btn" onclick="editTaskCancel(${idTask})" data-bs-toggle="tooltip" data-bs-placement="top" title="Cancelar"><i class="fa-solid fa-xmark"></i><button>
+        `
+        
+    let tarefaEditada = document.getElementById(`input${idTask}`);
+    tarefaEditada.addEventListener("keyup", () =>{
+        textoEditadodaTask = retiraEspacos(tarefaEditada.value);
+    })
+}
+
+
+function editTaskCancel(idTask){
+    let divDescricao = document.getElementById(`divDescricao${idTask}`);
+    let span = document.getElementById(`btnEditConfirm${idTask}`);
+    let input = document.getElementById(`input${idTask}`);
+    divDescricao.removeChild(span);
+    divDescricao.removeChild(input);
+    let descricao = document.createElement('p');
+        descricao.setAttribute('class','nome');
+        descricao.setAttribute('id',`descricao${idTask}`);
+        console.log(descricaoOriginal[0])
+    divDescricao.appendChild(descricaoOriginal[0]);
+    divDescricao.appendChild(descricaoOriginal[1]);
+}
