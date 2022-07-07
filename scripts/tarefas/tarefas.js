@@ -66,6 +66,8 @@ async function buscarInfoUsuario(){
 }
 
 async function buscarTask(){
+    renderizarSkeletons(2, ".tarefas-pendentes");
+    renderizarSkeletons(2, ".tarefas-terminadas");
     let configRequest = {
         headers: {
             "Content-type":'Application/Json',
@@ -78,16 +80,22 @@ async function buscarTask(){
         let resp = await fetch(`${BASE_URL}/tasks/`,configRequest)
         let resposta = await resp.json();
         // resposta.sort((x,y) => {return  y.id - x.id})
-        resposta.map( task =>{
-            setTask(task);
-            task.completed == true ? qtdCompleted++ : qtdNotCompleted++
-        });
-        if(qtdNotCompleted == 0){
-                tarefasPendentes.innerHTML = `<div class="alert alert-primary" role="alert"> Você não tem nenhuma tarefa pendente. </div>`;
-        };
-        if(qtdCompleted == 0){
-            tarefasTerminadas.innerHTML = `<div class="alert alert-primary" role="alert"> Você não tem tarefa concluida. </div>`;
-        };
+        if(resp.status == 200){
+            removerSkeleton(".tarefas-pendentes");
+            removerSkeleton(".tarefas-terminadas");
+            resposta.map( task =>{
+                setTask(task);
+                task.completed == true ? qtdCompleted++ : qtdNotCompleted++
+            });
+            if(qtdNotCompleted == 0){
+                    tarefasPendentes.innerHTML = `<div class="alert alert-primary" role="alert"> Você não tem nenhuma tarefa pendente. </div>`;
+            };
+            if(qtdCompleted == 0){
+                tarefasTerminadas.innerHTML = `<div class="alert alert-primary" role="alert"> Você não tem tarefa concluida. </div>`;
+            };
+        }else{
+            toastAlert("Ocorreu um erro ao carregar as atividades","danger");
+        }
     } catch(error){
         toastAlert(error,"danger");
     };
@@ -213,11 +221,11 @@ function setTask(itenTask){
         tarefasPendentes.innerHTML +=
         `
         <li class="tarefa" id="tarefa${itenTask.id}">
-            <div class="not-done" onclick="atualizaTask(${itenTask.id},'done')"></div>
+            <div class="not-done" onclick="atualizaTask(${itenTask.id},'done') data-bs-toggle="tooltip" data-bs-placement="top" title="Concluir Tarefa""></div>
             <div class="descricao" id="divDescricao${itenTask.id}">
                 <p class="nome" id="descricao${itenTask.id}">${itenTask.description}</p>
                 <p id="dtCriacao${itenTask.id}" class="timestamp">Criada em: ${dataFormatada(itenTask.createdAt)}
-                    <button id="btnEdit${itenTask.id}" class=" btn" onclick="editTask(${itenTask.id})"><i class="fa-solid fa-pencil"></i></button>
+                    <button id="btnEdit${itenTask.id}" class=" btn" onclick="editTask(${itenTask.id})" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar Tarefa"><i class="fa-solid fa-pencil"></i></button>
                 </p>
             </div>
         </li>
@@ -226,7 +234,7 @@ function setTask(itenTask){
         tarefasTerminadas.innerHTML +=
         `
         <li class="tarefa" id="tarefa${itenTask.id}">
-            <div class="not-done done" onclick="atualizaTask(${itenTask.id},'done')"></div>
+            <div class="not-done done" onclick="atualizaTask(${itenTask.id},'done')" data-bs-toggle="tooltip" data-bs-placement="top" title="Reabrir Tarefa"></div>
             <div class="descricao">
                 <p class="nome">${itenTask.description}</p>
                 <p class="timestamp">Criada em: ${dataFormatada(itenTask.createdAt)}
@@ -315,8 +323,8 @@ function editTask(idTask){
         btnEdicao.setAttribute('id',`btnEditConfirm${idTask}`);
         divDescricao.appendChild(btnEdicao);
         document.getElementById(`btnEditConfirm${idTask}`).innerHTML=`
-        <button id="btnEditConfirm${idTask}" class=" btn" onclick="atualizaTask(${idTask},'edit','${input.value}')"><i class="fa-solid fa-check"></i></button>
-        <button id="btnEditCancel${idTask}" class=" btn" onclick="editTaskCancel(${idTask})"><i class="fa-solid fa-xmark"></i><button>
+        <button id="btnEditConfirm${idTask}" class="btn" onclick="atualizaTask(${idTask},'edit','${input.value}')" data-bs-toggle="tooltip" data-bs-placement="top" title="Confirmar"><i class="fa-solid fa-check"></i></button>
+        <button id="btnEditCancel${idTask}" class="btn" onclick="editTaskCancel(${idTask})" data-bs-toggle="tooltip" data-bs-placement="top" title="Cancelar"><i class="fa-solid fa-xmark"></i><button>
         `
         
     let tarefaEditada = document.getElementById(`input${idTask}`);
