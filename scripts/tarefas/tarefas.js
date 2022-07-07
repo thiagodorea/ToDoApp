@@ -79,7 +79,7 @@ async function buscarTask(){
         let qtdNotCompleted = 0;
         let resp = await fetch(`${BASE_URL}/tasks/`,configRequest)
         let resposta = await resp.json();
-        // resposta.sort((x,y) => {return  y.id - x.id})
+        resposta.sort((x,y) => {return x.id - y.id})
         if(resp.status == 200){
             removerSkeleton(".tarefas-pendentes");
             removerSkeleton(".tarefas-terminadas");
