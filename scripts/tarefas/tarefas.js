@@ -64,6 +64,8 @@ async function buscarInfoUsuario(){
 }
 
 async function buscarTask(){
+    renderizarSkeletons(2, ".tarefas-pendentes");
+    renderizarSkeletons(2, ".tarefas-terminadas");
     let configRequest = {
         headers: {
             "Content-type":'Application/Json',
@@ -76,16 +78,22 @@ async function buscarTask(){
         let resp = await fetch(`${BASE_URL}/tasks/`,configRequest)
         let resposta = await resp.json();
         // resposta.sort((x,y) => {return  y.id - x.id})
-        resposta.map( task =>{
-            setTask(task);
-            task.completed == true ? qtdCompleted++ : qtdNotCompleted++
-        });
-        if(qtdNotCompleted == 0){
-                tarefasPendentes.innerHTML = `<div class="alert alert-primary" role="alert"> Você não tem nenhuma tarefa pendente. </div>`;
-        };
-        if(qtdCompleted == 0){
-            tarefasTerminadas.innerHTML = `<div class="alert alert-primary" role="alert"> Você não tem tarefa concluida. </div>`;
-        };
+        if(resp.status == 200){
+            removerSkeleton(".tarefas-pendentes");
+            removerSkeleton(".tarefas-terminadas");
+            resposta.map( task =>{
+                setTask(task);
+                task.completed == true ? qtdCompleted++ : qtdNotCompleted++
+            });
+            if(qtdNotCompleted == 0){
+                    tarefasPendentes.innerHTML = `<div class="alert alert-primary" role="alert"> Você não tem nenhuma tarefa pendente. </div>`;
+            };
+            if(qtdCompleted == 0){
+                tarefasTerminadas.innerHTML = `<div class="alert alert-primary" role="alert"> Você não tem tarefa concluida. </div>`;
+            };
+        }else{
+            toastAlert("Ocorreu um erro ao carregar as atividades","danger");
+        }
     } catch(error){
         toastAlert(error,"danger");
     };
@@ -204,7 +212,7 @@ function setTask(itenTask){
         tarefasPendentes.innerHTML +=
         `
         <li class="tarefa" id="tarefa ${itenTask.id}">
-            <div class="not-done" onclick="taskDone(${itenTask.id})"></div>
+            <div class="not-done" onclick="taskDone(${itenTask.id})" data-bs-toggle="tooltip" data-bs-placement="top" title="Concluir Tarefa"></div>
             <div class="descricao">
                 <p class="nome">${itenTask.description}</p>
                 <p class="timestamp">Criada em: ${dataFormatada(itenTask.createdAt)}
@@ -217,7 +225,7 @@ function setTask(itenTask){
         tarefasTerminadas.innerHTML +=
         `
         <li class="tarefa" id="tarefa ${itenTask.id}">
-            <div class="not-done done" onclick="taskDone(${itenTask.id})"></div>
+            <div class="not-done done" onclick="taskDone(${itenTask.id})" data-bs-toggle="tooltip" data-bs-placement="top" title="Reabrir Tarefa"></div>
             <div class="descricao">
                 <p class="nome">${itenTask.description}</p>
                 <p class="timestamp">Criada em: ${dataFormatada(itenTask.createdAt)}
