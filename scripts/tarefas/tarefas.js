@@ -158,7 +158,7 @@ async function delTaskConfirm(id){
     }
 };
 
-async function atualizaTask(id,btn,descricao){
+async function atualizaTask(id,btn){
     let configRequest= {
         headers: {
             "Content-type":'Application/Json',
@@ -221,7 +221,7 @@ function setTask(itenTask){
         tarefasPendentes.innerHTML +=
         `
         <li class="tarefa" id="tarefa${itenTask.id}">
-            <div class="not-done" onclick="atualizaTask(${itenTask.id},'done') data-bs-toggle="tooltip" data-bs-placement="top" title="Concluir Tarefa""></div>
+            <div class="not-done" onclick="atualizaTask(${itenTask.id},'done')" data-bs-toggle="tooltip" data-bs-placement="top" title="Concluir Tarefa"></div>
             <div class="descricao" id="divDescricao${itenTask.id}">
                 <p class="nome" id="descricao${itenTask.id}">${itenTask.description}</p>
                 <p id="dtCriacao${itenTask.id}" class="timestamp">Criada em: ${dataFormatada(itenTask.createdAt)}
