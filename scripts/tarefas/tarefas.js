@@ -18,9 +18,12 @@ let tarefa = {
     completed: false
 }
 
-onload = function(){
+window.onload = function(){
     tokenJwt = this.sessionStorage.getItem("jwt");
     !tokenJwt ? location.href = "index.html": buscarInfoUsuario();
+
+    renderizarSkeletons(4, ".tarefas-pendentes");
+    renderizarSkeletons(2, ".tarefas-terminadas");
 };
 
 sair.addEventListener("click",() =>{
@@ -58,6 +61,7 @@ async function buscarInfoUsuario(){
         let resp = await fetch(`${BASE_URL}/users/getMe`,configRequest)
         let resposta = await resp.json();
         if(resp.status == 200){
+            
             setName(resposta);
             buscarTask();
         }
@@ -67,8 +71,7 @@ async function buscarInfoUsuario(){
 }
 
 async function buscarTask(){
-    renderizarSkeletons(2, ".tarefas-pendentes");
-    renderizarSkeletons(2, ".tarefas-terminadas");
+    
     let configRequest = {
         headers: {
             "Content-type":'Application/Json',
@@ -125,6 +128,7 @@ async function enviarTarefa(tarefaObj){
             novaTarefa.value = '';
             btnConcluido.classList.remove('done');
             buscarTask();
+            
         } 
     } catch (error) {
         btnSpinner(resp.status);
@@ -215,7 +219,7 @@ async function atualizaTask(id,btn){
 
 function setName(dados){
     nomeUsuario.innerText = `Olá, ${dados.firstName} ${dados.lastName}`;
-    userImage.style.backgroundImage ='url("../assets/face.png")';
+    userImage.style.backgroundImage ='url("./assets/face.png")';
 };
 
 function setTask(itenTask){
