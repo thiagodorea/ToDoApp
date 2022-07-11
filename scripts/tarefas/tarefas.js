@@ -45,6 +45,7 @@ btnNewTask.addEventListener("click",(evento) =>{
     if(validaTask(retiraEspacos(novaTarefa.value))){
         tarefa.description = retiraEspacos(novaTarefa.value);
         let tarefaJson = JSON.stringify(tarefa);
+        console.log(tarefaJson)
         enviarTarefa(tarefaJson);
     };
 });
@@ -106,7 +107,6 @@ async function buscarTask(){
 
 async function enviarTarefa(tarefaObj){
     btnSpinner();
-    retiraEspacos(tarefaObj)
     let configRequest = {
         method: "POST",
         headers: {
@@ -117,7 +117,9 @@ async function enviarTarefa(tarefaObj){
         body:tarefaObj
     } 
     try {
-        let resp = await fetch(`${BASE_URL}/tasks/`,configRequest);
+        console.log(configRequest)
+        let resp = await fetch(`${BASE_URL}/tasks`,configRequest);
+        console.log(resp)
         let resposta = await resp.json();
         btnSpinner(resp.status);
         if (resp.status == 201 || resp.status == 200) {
