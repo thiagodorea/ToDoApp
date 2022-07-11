@@ -18,11 +18,11 @@ let tarefa = {
     completed: false
 }
 
-window.onload = function(){
+onload = function(){
     tokenJwt = this.sessionStorage.getItem("jwt");
     !tokenJwt ? location.href = "index.html": buscarInfoUsuario();
 
-    renderizarSkeletons(4, ".tarefas-pendentes");
+    renderizarSkeletons(2, ".tarefas-pendentes");
     renderizarSkeletons(2, ".tarefas-terminadas");
 };
 
