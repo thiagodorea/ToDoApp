@@ -1,4 +1,4 @@
-let BASE_URL = "https://ctd-todo-api.herokuapp.com/v1";
+let BASE_URL = "https://ctd-fe2-todo-v2.herokuapp.com/v1";
 
 function retiraEspacos(texto){
     return texto.trim();
