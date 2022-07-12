@@ -45,7 +45,6 @@ btnNewTask.addEventListener("click",(evento) =>{
     if(validaTask(retiraEspacos(novaTarefa.value))){
         tarefa.description = retiraEspacos(novaTarefa.value);
         let tarefaJson = JSON.stringify(tarefa);
-        console.log(tarefaJson)
         enviarTarefa(tarefaJson);
     };
 });
@@ -117,9 +116,7 @@ async function enviarTarefa(tarefaObj){
         body:tarefaObj
     } 
     try {
-        console.log(configRequest)
         let resp = await fetch(`${BASE_URL}/tasks`,configRequest);
-        console.log(resp)
         let resposta = await resp.json();
         btnSpinner(resp.status);
         if (resp.status == 201 || resp.status == 200) {
@@ -349,7 +346,6 @@ function editTaskCancel(idTask){
     let descricao = document.createElement('p');
         descricao.setAttribute('class','nome');
         descricao.setAttribute('id',`descricao${idTask}`);
-        console.log(descricaoOriginal[0])
     divDescricao.appendChild(descricaoOriginal[0]);
     divDescricao.appendChild(descricaoOriginal[1]);
 }
