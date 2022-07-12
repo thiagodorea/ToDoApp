@@ -21,3 +21,5 @@ function removerSkeleton(conteiner) {
     const skeletons = document.querySelectorAll(`${conteiner}-child`);
     skeletons.forEach((skeleton) => conteinerTarefas.removeChild(skeleton));
 }
+
+
